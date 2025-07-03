@@ -28,6 +28,19 @@ RUN composer install --no-dev --optimize-autoloader
 # Copy .env example as .env
 RUN cp .env.example .env
 
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Copy .env file
+RUN cp .env.example .env
+
+# Install Node.js and Vite dependencies
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
+
+RUN npm install && npm run build
+
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www && chmod -R 775 storage bootstrap/cache
 
