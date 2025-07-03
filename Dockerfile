@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -10,25 +10,28 @@ RUN apt-get update && apt-get install -y \
     zip unzip git curl \
     libzip-dev libpq-dev mariadb-client
 
-# PHP extensions
+# Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Composer
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Working directory
+# Set working directory
 WORKDIR /var/www
 
-# Copy source
+# Copy all project files
 COPY . .
 
-# Install Laravel dependencies
+# Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Permissions
+# Copy .env example as .env
+RUN cp .env.example .env
+
+# Set permissions
 RUN chown -R www-data:www-data /var/www && chmod -R 775 storage bootstrap/cache
 
-# Run Laravel setup commands
+# Run Laravel setup
 CMD php artisan config:clear && \
     php artisan key:generate --force && \
     php artisan migrate --force && \
