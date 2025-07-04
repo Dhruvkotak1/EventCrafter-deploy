@@ -31,8 +31,15 @@ RUN cp .env.example .env
 # Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Copy .env file
-RUN cp .env.example .env
+
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
+
+# Install JS dependencies & build assets
+RUN npm ci
+RUN npm run build
 
 # Install Node.js and Vite dependencies
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
@@ -40,6 +47,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
 
 RUN npm install && npm run build
 
+# Copy .env file
+RUN cp .env.example .env
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www && chmod -R 775 storage bootstrap/cache
