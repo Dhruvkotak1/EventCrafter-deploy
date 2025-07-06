@@ -32,6 +32,13 @@ class AdminController extends Controller
         return redirect(route('admin.login'))->with('error', 'Credentials not matched');
     }
 
+    public function logout(Request $request){
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect(route("home"))->with("success","Logged out successfully");
+    }
+
     public function dashboard(Request $request)
     {
         $totalEvents = Event::all()->count();

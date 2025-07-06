@@ -47,7 +47,7 @@ class OrganizerController extends Controller
     public function viewFeedback()
     {
         $events = Event::where("user_id", Auth::user()->id)->pluck('id');
-        $feedbacks = Feedback::whereIn('id', $events)->get();
+        $feedbacks = Feedback::whereIn('event_id', $events)->get();
         return view('organizer.viewFeedback', compact('feedbacks'));
     }
 }

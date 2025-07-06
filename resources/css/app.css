@@ -8,7 +8,3 @@
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark,night,cupcake,dark,lemonade,dracula,abyss,acid,light;
 }
-
-
-/*@vite('resources/js/app.js')
-  @vite(['resources/css/app.css'])*/

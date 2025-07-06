@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EventCrafter - Home</title>
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         .active {
             font-weight: bold;
@@ -55,16 +55,23 @@
         <div class="hidden md:flex">
             <ul class="menu menu-horizontal px-1">
                 <li><a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a></li>
-                <li><a href="{{route('features')}}" class="{{ request()->is('features') ? 'active' : '' }}">Features</a></li>
-                <li><a href="{{route('events.browse')}}" class="{{ request()->is('events/browse') ? 'active' : '' }}">Events</a></li>
-                @auth
-                <li><a href="/dashboard"
-                        class="{{ request()->is('customer/dashboard') || request()->is('organizer/dashboard') ? 'active' : '' }}">Dashboard</a>
-                </li>
-            @else
-                <li><a href="{{ route('login') }}" class="{{ request()->is('login') ? 'active' : '' }}">Login</a>
-                </li>
-            @endauth            </ul>
+                <li><a href="{{ route('features') }}"
+                        class="{{ request()->is('features') ? 'active' : '' }}">Features</a></li>
+                <li><a href="{{ route('events.browse') }}"
+                        class="{{ request()->is('events/browse') ? 'active' : '' }}">Events</a></li>
+                @if (auth()->check())
+                    <li><a href="/dashboard"
+                            class="{{ request()->is('customer/dashboard') || request()->is('organizer/dashboard') || request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
+                    </li>
+                @elseif (auth()->guard('admin')->check())
+                    <li><a href="{{route('admin.dashboard')}}"
+                        class="{{request()->is('admin/dashboard') ? 'active' : ''}}">Dashboard</a>
+                    </li>
+                @else
+                    <li><a href="{{ route('login') }}" class="{{ request()->is('login') ? 'active' : '' }}">Login</a>
+                    </li>
+                @endif
+            </ul>
         </div>
 
         <!-- Right Side: Theme, Profile, Mobile Menu -->
@@ -84,7 +91,7 @@
             </select>
 
             <!-- Profile Icon (only for logged in) -->
-            @auth
+            @if (auth()->check())
                 <div class="dropdown dropdown-end">
                     <label tabindex="0" class="btn btn-ghost btn-circle avatar">
                         <div class="w-8 rounded-full">
@@ -98,7 +105,7 @@
                     </label>
                     <ul tabindex="0"
                         class="menu menu-sm dropdown-content mt-3 z-[2] p-2 shadow bg-base-200 text-base-content rounded-box w-40">
-                        <li><a href="{{route('profile.show',Auth::user()->id)}}">Profile</a></li>
+                        <li><a href="{{ route('profile.show', Auth::user()->id) }}">Profile</a></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -107,7 +114,29 @@
                         </li>
                     </ul>
                 </div>
-            @endauth
+            @elseif (auth()->guard('admin')->check())
+                <div class="dropdown dropdown-end">
+                    <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                        <div class="w-8 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-full h-full"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z">
+                                </path>
+                            </svg>
+                        </div>
+                    </label>
+                    <ul tabindex="0"
+                        class="menu menu-sm dropdown-content mt-3 z-[2] p-2 shadow bg-base-200 text-base-content rounded-box w-40">
+                        <li>
+                            <form method="POST" action="{{ route('admin.logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full text-left">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            @endif
 
             <!-- Mobile Menu -->
             <div class="dropdown dropdown-end md:hidden">
@@ -121,16 +150,23 @@
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content mt-3 z-[3] p-2 shadow bg-base-200 text-base-content rounded-box w-52">
                     <li><a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a></li>
-                    <li><a href="{{route('features')}}" class="{{ request()->is('features') ? 'active' : '' }}">Features</a></li>
-                    <li><a href="{{route('events.browse')}}" class="{{ request()->is('events/browse') ? 'active' : '' }}">Events</a></li>
-                    @auth
-                    <li><a href="/dashboard"
-                            class="{{ request()->is('customer/dashboard') || request()->is('organizer/dashboard') ? 'active' : '' }}">Dashboard</a>
-                    </li>
-                @else
-                    <li><a href="{{ route('login') }}" class="{{ request()->is('login') ? 'active' : '' }}">Login</a>
-                    </li>
-                @endauth
+                    <li><a href="{{ route('features') }}"
+                            class="{{ request()->is('features') ? 'active' : '' }}">Features</a></li>
+                    <li><a href="{{ route('events.browse') }}"
+                            class="{{ request()->is('events/browse') ? 'active' : '' }}">Events</a></li>
+                            @if (auth()->check())
+                            <li><a href="/dashboard"
+                                    class="{{ request()->is('customer/dashboard') || request()->is('organizer/dashboard') || request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
+                            </li>
+                        @elseif (auth()->guard('admin')->check())
+                            <li><a href="{{route('admin.dashboard')}}"
+                                class="{{request()->is('admin/dashboard') ? 'active' : ''}}">Dashboard</a>
+                            </li>
+                        @else
+                            <li><a href="{{ route('login') }}" class="{{ request()->is('login') ? 'active' : '' }}">Login</a>
+                            </li>
+                        @endif
+
                     <li>
                         <select id="theme-switcher-mobile"
                             class="select select-sm w-full mt-1 bg-base-300 text-base-content border border-base-content/20">
@@ -149,61 +185,97 @@
             </div>
         </div>
     </div>
-    </div>
 
     <!-- Hero Section -->
     <section class="flex flex-col justify-center items-center text-center px-4 py-10">
-        <h1 class="text-5xl font-bold mb-4">Welcome to EventCrafter</h1>
-        <p class="text-lg mb-6 max-w-xl">Plan, manage, and succeed in your events with ease. From small gatherings to
-            grand functions, EventCrafter has your back.</p>
-        <div class="flex gap-4">
-            <a href="{{ route('register') }}"><button class="btn btn-primary">Create Account</button></a>
-            <a href="{{ route('events.browse') }}"><button class="btn btn-outline">Browse Events</button></a>
-        </div>
+
+        {{-- Authenticated Admin via "admin" guard --}}
+        @if (Auth::guard('admin')->check())
+            <h1 class="text-5xl font-bold mb-4">Welcome Admin</h1>
+            <p class="text-lg mb-6 max-w-xl">Monitor and control the entire EventCrafter system efficiently.</p>
+            <div class="flex gap-4">
+                <a href="{{ route('admin.dashboard') }}">
+                    <button class="btn btn-primary">Admin Dashboard</button>
+                </a>
+                <a href="{{ route('admin.users.manage') }}">
+                    <button class="btn btn-outline">Manage Users</button>
+                </a>
+            </div>
+
+            {{-- Authenticated User via "web" guard --}}
+        @elseif(auth()->check())
+            @php
+                $user = auth()->user();
+                $role = $user->role;
+            @endphp
+
+            @if ($role === 'customer')
+                <h1 class="text-5xl font-bold mb-4">Welcome, {{ $user->name }}!</h1>
+                <p class="text-lg mb-6 max-w-xl">Discover and book amazing events. Let's make your day special.</p>
+                <div class="flex gap-4">
+                    <a href="{{ route('customers.dashboard') }}">
+                        <button class="btn btn-primary">My Bookings</button>
+                    </a>
+                    <a href="{{ route('events.browse') }}">
+                        <button class="btn btn-outline">Browse Events</button>
+                    </a>
+                </div>
+            @elseif($role === 'organizer')
+                <h1 class="text-5xl font-bold mb-4">Hello Organizer, {{ $user->name }}!</h1>
+                <p class="text-lg mb-6 max-w-xl">Create, manage, and track your event success here.</p>
+                <div class="flex gap-4">
+                    <a href="{{ route('organizers.dashboard') }}">
+                        <button class="btn btn-primary">Go to Dashboard</button>
+                    </a>
+                    <a href="{{ route('organizers.createEvent') }}">
+                        <button class="btn btn-outline">Create Event</button>
+                    </a>
+                </div>
+            @endif
+        @else
+            <h1 class="text-5xl font-bold mb-4">Welcome to EventCrafter</h1>
+            <p class="text-lg mb-6 max-w-xl">
+                Plan, manage, and succeed in your events with ease. From small gatherings to grand functions,
+                EventCrafter has your back.
+            </p>
+            <div class="flex gap-4">
+                <a href="{{ route('register') }}">
+                    <button class="btn btn-primary">Create Account</button>
+                </a>
+                <a href="{{ route('events.browse') }}">
+                    <button class="btn btn-outline">Browse Events</button>
+                </a>
+            </div>
+        @endif
     </section>
 
+
+
     <!-- Featured Events Section -->
+
     <section class="py-10 px-4 text-center">
         <h2 class="text-3xl font-bold mb-6">Featured Events</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="card shadow-lg image-full">
-                <figure><img
-                        src="https://media.istockphoto.com/id/1363104923/photo/diverse-modern-office-businessman-leads-business-meeting-with-managers-talks-uses.webp?a=1&b=1&s=612x612&w=0&k=20&c=P3p7QksVY2syzlJnEKZYy-AUcnD5hym97liMskfriaE="
-                        alt="Tech Conference" /></figure>
-                <div class="card-body">
-                    <h3 class="text-xl font-bold">Tech Conference 2025</h3>
-                    <p>Explore the future of AI and cloud with global experts.</p>
-                    <div class="card-actions justify-center">
-                        <button class="btn btn-accent">Register</button>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach ($topEvents as $event)
+                <div class="card shadow-lg image-full w-full h-96">
+                    <figure>
+                        <img src="{{ $event->image }}" alt="{{ $event->title }}"
+                             class="w-full h-full object-cover rounded-xl" />
+                    </figure>
+                    <div class="card-body">
+                        <h3 class="text-xl font-bold">{{ $event->title }}</h3>
+                        <p>{{ $event->description }}</p>
+                        <div class="card-actions justify-center">
+                            <a href="{{ route('events.show', $event->id) }}">
+                                <button class="btn btn-accent">{{ $event->button }}</button>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card shadow-lg image-full">
-                <figure><img
-                        src="https://plus.unsplash.com/premium_photo-1661502996011-cbd328de50f2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c3RhcnR1cCUyMG1lZXR8ZW58MHx8MHx8fDA%3D"
-                        alt="Startup Meetup" /></figure>
-                <div class="card-body">
-                    <h3 class="text-xl font-bold">Startup Meetup</h3>
-                    <p>Network with founders, investors, and creators in your city.</p>
-                    <div class="card-actions justify-center">
-                        <button class="btn btn-accent">Join Now</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card shadow-lg image-full">
-                <figure><img
-                        src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bXVzaWMlMjBwYXJ0eXxlbnwwfHwwfHx8MA%3D%3D"
-                        alt="Music Fest" /></figure>
-                <div class="card-body">
-                    <h3 class="text-xl font-bold">Music Fest</h3>
-                    <p>Catch live performances from top indie artists and bands.</p>
-                    <div class="card-actions justify-center">
-                        <a href="/bookings"><button class="btn btn-accent">Book Ticket</button></a>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </section>
+    
 
     <!-- Features Section -->
     <section class="py-10 px-4 text-center">

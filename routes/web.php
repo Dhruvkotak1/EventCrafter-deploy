@@ -15,7 +15,15 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Types\Relations\Role;
 
 Route::get('/', function () {
-    return view('welcome');
+    $topEvents = Event::whereDate('date', '>=', now()->toDateString())->orderBy('tickets_booked','desc')->take(3)->get();
+    $buttons= ["Register",'Join',"Book Now"];
+    $i=0;
+    foreach ($topEvents as $event) {
+        $event->button = $buttons[$i];
+        $i++;
+    }
+    
+    return view('welcome',compact('topEvents','buttons'));
 })->name('home');
 Route::get("/events/browse",[EventController::class,'browse'])->name('events.browse');
 Route::get('/features',function(){return view('features');})->name('features');
@@ -33,7 +41,7 @@ Route::middleware('IsAdmin')->group(function(){
     Route::patch('admin/toggleUsers/{id}',[AdminController::class,'toggleUsers'])->name('admin.users.toggle');
     Route::get('/admin/viewBookings',[AdminController::class,'viewBookings'])->name('admin.bookings.view');
     Route::get('/admin/feedbackReports',[AdminController::class,'feedbackReports'])->name('admin.feedbacks.report');
-
+    Route::post('/admin/logout',[AdminController::class,'logout'])->name('admin.logout');
 
     
     

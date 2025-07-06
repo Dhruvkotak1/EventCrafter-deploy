@@ -62,14 +62,18 @@
                         class="{{ request()->is('features') ? 'active' : '' }}">Features</a></li>
                 <li><a href="{{ route('events.browse') }}"
                         class="{{ request()->is('events/browse') ? 'active' : '' }}">Events</a></li>
-                @auth
+                @if (auth()->check())
                     <li><a href="/dashboard"
-                            class="{{ request()->is('customer/dashboard') || request()->is('organizer/dashboard') ? 'active' : '' }}">Dashboard</a>
+                            class="{{ request()->is('customer/dashboard') || request()->is('organizer/dashboard') || request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
+                    </li>
+                @elseif (auth()->guard('admin')->check())
+                    <li><a href="{{route('admin.dashboard')}}"
+                        class="{{request()->is('admin/dashboard') ? 'active' : ''}}">Dashboard</a>
                     </li>
                 @else
                     <li><a href="{{ route('login') }}" class="{{ request()->is('login') ? 'active' : '' }}">Login</a>
                     </li>
-                @endauth
+                @endif
             </ul>
         </div>
 
@@ -90,7 +94,7 @@
             </select>
 
             <!-- Profile Icon (only for logged in) -->
-            @auth
+            @if (auth()->check())
                 <div class="dropdown dropdown-end">
                     <label tabindex="0" class="btn btn-ghost btn-circle avatar">
                         <div class="w-8 rounded-full">
@@ -104,7 +108,7 @@
                     </label>
                     <ul tabindex="0"
                         class="menu menu-sm dropdown-content mt-3 z-[2] p-2 shadow bg-base-200 text-base-content rounded-box w-40">
-                        <li><a href="{{route('profile.show',Auth::user()->id)}}">Profile</a></li>
+                        <li><a href="{{ route('profile.show', Auth::user()->id) }}">Profile</a></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -113,7 +117,29 @@
                         </li>
                     </ul>
                 </div>
-            @endauth
+            @elseif (auth()->guard('admin')->check())
+                <div class="dropdown dropdown-end">
+                    <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                        <div class="w-8 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-full h-full"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z">
+                                </path>
+                            </svg>
+                        </div>
+                    </label>
+                    <ul tabindex="0"
+                        class="menu menu-sm dropdown-content mt-3 z-[2] p-2 shadow bg-base-200 text-base-content rounded-box w-40">
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full text-left">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            @endif
 
             <!-- Mobile Menu -->
             <div class="dropdown dropdown-end md:hidden">
@@ -125,23 +151,28 @@
                     </svg>
                 </label>
                 <ul tabindex="0"
-                    class="menu menu-sm dropdown-content mt-3 z-[3] p-2 shadow rounded-box w-52 bg-neutral text-neutral-content">
+                    class="menu menu-sm dropdown-content mt-3 z-[3] p-2 shadow bg-base-200 text-base-content rounded-box w-52">
                     <li><a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a></li>
                     <li><a href="{{ route('features') }}"
                             class="{{ request()->is('features') ? 'active' : '' }}">Features</a></li>
                     <li><a href="{{ route('events.browse') }}"
                             class="{{ request()->is('events/browse') ? 'active' : '' }}">Events</a></li>
-                    @auth
-                        <li><a href="/dashboard"
-                                class="{{ request()->is('customer/dashboard') || request()->is('organizer/dashboard') ? 'active' : '' }}">Dashboard</a>
-                        </li>
-                    @else
-                        <li><a href="{{ route('login') }}" class="{{ request()->is('login') ? 'active' : '' }}">Login</a>
-                        </li>
-                    @endauth
-                    <li class="bg-base-200 text-base-content">
+                            @if (auth()->check())
+                            <li><a href="/dashboard"
+                                    class="{{ request()->is('customer/dashboard') || request()->is('organizer/dashboard') || request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
+                            </li>
+                        @elseif (auth()->guard('admin')->check())
+                            <li><a href="{{route('admin.dashboard')}}"
+                                class="{{request()->is('admin/dashboard') ? 'active' : ''}}">Dashboard</a>
+                            </li>
+                        @else
+                            <li><a href="{{ route('login') }}" class="{{ request()->is('login') ? 'active' : '' }}">Login</a>
+                            </li>
+                        @endif
+
+                    <li>
                         <select id="theme-switcher-mobile"
-                            class="select select-sm w-full mt-1 border border-base-content/20">
+                            class="select select-sm w-full mt-1 bg-base-300 text-base-content border border-base-content/20">
                             <option disabled selected>🎨 Theme</option>
                             <option value="light" class="bg-base-200 text-base-content">☀️ Light</option>
                             <option value="dark" class="bg-base-200 text-base-content">🌙 Dark</option>

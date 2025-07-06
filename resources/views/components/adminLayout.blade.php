@@ -62,7 +62,7 @@
                         class="{{ request()->is('features') ? 'active' : '' }}">Features</a></li>
                 <li><a href="{{ route('events.browse') }}"
                         class="{{ request()->is('events/browse') ? 'active' : '' }}">Events</a></li>
-                @if (Auth::guard('admin')->check())
+                @if (auth()->guard('admin')->check())
                     <li><a href="{{ route('admin.dashboard') }}"
                             class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
                     </li>
@@ -90,7 +90,7 @@
             </select>
 
             <!-- Profile Icon (only for logged in) -->
-            @if (Auth::guard('admin')->check())
+            @if (auth()->guard('admin')->check())
                 <div class="dropdown dropdown-end">
                     <label tabindex="0" class="btn btn-ghost btn-circle avatar">
                         <div class="w-8 rounded-full">
@@ -130,12 +130,12 @@
                             class="{{ request()->is('features') ? 'active' : '' }}">Features</a></li>
                     <li><a href="{{ route('events.browse') }}"
                             class="{{ request()->is('events/browse') ? 'active' : '' }}">Events</a></li>
-                    @if (Auth::guard('admin')->check())
+                    @if (auth()->guard('admin')->check())
                         <li><a href="{{ route('admin.dashboard') }}"
                                 class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
                         </li>
                     @else
-                        <li><a href="{{ route('login') }}"
+                        <li><a href="{{ route('admin.logout') }}"
                                 class="{{ request()->is('login') ? 'active' : '' }}">Login</a>
                         </li>
                     @endif
