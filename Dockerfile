@@ -40,5 +40,6 @@ RUN chown -R www-data:www-data /var/www && chmod -R 775 storage bootstrap/cache
 RUN php artisan config:clear
 
 # Start server WITH migration (uses Render env + Aiven SSL)
-CMD php artisan migrate --force && \
+CMD echo "$DB_SSL_CA" > /var/www/ca.pem && \
+    php artisan migrate --force && \
     php artisan serve --host=0.0.0.0 --port=${PORT}
