@@ -33,11 +33,6 @@ EventCrafter is a web-based event management platform built using Laravel. It al
 - **Authentication:** Laravel Breeze
 - **Charts:** Chart.js for analytics
 
----
-
-## 📁 Project Structure (Simplified)
-
-EventCrafter/ ├── app/ │   ├── Http/ │   ├── Models/ │   ├── View/Components/ ├── resources/ │   ├── views/ │   │   ├── components/ │   │   ├── admin/ │   │   ├── organizer/ │   │   ├── customer/ ├── public/ ├── routes/ │   ├── web.php ├── database/ │   ├── migrations/ │   ├── seeders/ ├── .env ├── composer.json ├── vite.config.js
 
 ---
 
@@ -105,17 +100,8 @@ Feedback reports include average ratings per event.
 All analytics are auto-adjusted for dark/light themes using DaisyUI.
 
 
-
 ---
 
-📸 Screenshots
-
-> Add 1–2 screenshots of each dashboard (Customer, Organizer, Admin) in your documentation or report folder.
-
-
-
-
----
 
 💡 Future Enhancements
 
@@ -128,15 +114,9 @@ Advanced filters for customers to find events
 Multi-language support
 
 
-
 ---
 
-📄 License
 
-This project is licensed under the MIT License.
-
-
----
 
 👨‍💻 Developed By
 
